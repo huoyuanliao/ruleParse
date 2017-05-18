@@ -47,7 +47,7 @@ def ruleParseTest(rulePath):
     for sig in rulefile.signatures:
         print sig.id
 def main():
-    ruleParseTest('/home/liaozy/test.rules')
+    ruleParseTest('test.rules')
 
 if __name__ == '__main__':
     main()
