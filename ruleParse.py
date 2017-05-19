@@ -2,6 +2,12 @@
 
 import os
 class Signature(object):
+    '''
+    class Signature
+    sid: signature.id
+    rule version: signature.version
+    rule string: signature.rule
+    '''
     def __init__(self,line):
         self.id  = _getsid_(line)
         self.version = _getversion_(line)
@@ -47,17 +53,39 @@ def _getFileList_(dirPath):
     return fileList
 
 def parseRuleDir(ruleDir):
-    fileList = getFileList(ruleDir)
+    '''
+    parseRuleDir: parse rules from Rule Directory
+    return: ruleFile class instance List
+    '''
+    fileList = _getFileList_(ruleDir)
     ruleObjList = []
     for fname in fileList:
         ruleObjList.append(RuleFile(fname))
     return ruleObjList
 
+def getRuleDict(ruleObjList):
+    '''
+    getRuleDict: {rulefile: sidList}
+    param: RuleFile List
+    return: Dict of rule file
+    '''
+    ruleDict = {}
+    for ruleObj in ruleObjList:
+        sids = [sig.id for sig in ruleObj.signatures]
+        for sid in sids:
+            if ruleDict.has_key(ruleObj.fileName):
+                ruleDict[ruleObj.fileName].append(sid)
+            else:
+                ruleDict[ruleObj.fileName] = [sid]
+    return ruleDict
+
 def ruleParseTest(rulePath):
-    rulefile = RuleFile(rulePath)
-    print rulefile.fileName
-    for sig in rulefile.signatures:
-        print sig.id
+    ruleObjList = parseRuleDir(rulePath)
+    ruleDict = getRuleDict(ruleObjList)
+    for f,sids in ruleDict.items():
+        print f
+        for sid in sids:
+            print '\t%s'%sid
 def main():
     ruleParseTest('test.rules')
 
