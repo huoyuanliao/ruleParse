@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 class Signature(object):
     def __init__(self,line):
         self.id  = Signature._getsid_(line)
@@ -40,6 +41,22 @@ class RuleFile(object):
                     continue
                 signature.append(sig)
             return signature
+
+
+def _getFileList_(dirPath):
+    if os.path.isdir(dirPath):
+        fileList = [ftuple[0]+r'/'+filename for ftuple in os.walk(dirPath) for filename in ftuple[2] if filename.endswith('rules')]
+    elif os.path.isfile(dirPath):
+        fileList = [dirPath]
+    else: fileList = []
+    return fileList
+
+def parseRuleDir(ruleDir):
+    fileList = getFileList(ruleDir)
+    ruleObjList = []
+    for fname in fileList:
+        ruleObjList.append(RuleFile(fname))
+    return ruleObjList
 
 def ruleParseTest(rulePath):
     rulefile = RuleFile(rulePath)
