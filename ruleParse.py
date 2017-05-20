@@ -44,7 +44,7 @@ class RuleFile(object):
                 signature.append(sig)
             return signature
 
-def _getFileList_(dirPath):
+def __getFileList(dirPath):
     if os.path.isdir(dirPath):
         fileList = [ftuple[0]+r'/'+filename for ftuple in os.walk(dirPath) for filename in ftuple[2] if filename.endswith('rules')]
     elif os.path.isfile(dirPath):
@@ -57,7 +57,7 @@ def parseRuleDir(ruleDir):
     parseRuleDir: parse rules from Rule Directory
     return: ruleFile class instance List
     '''
-    fileList = _getFileList_(ruleDir)
+    fileList = __getFileList(ruleDir)
     ruleObjList = []
     for fname in fileList:
         ruleObjList.append(RuleFile(fname))
