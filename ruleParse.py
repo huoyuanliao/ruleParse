@@ -9,40 +9,40 @@ class Signature(object):
     rule string: signature.rule
     '''
     def __init__(self,line):
-        self.id  = _getsid_(line)
-        self.version = _getversion_(line)
+        self.id  = Signature.__getsid(line)
+        self.version = Signature.__getversion(line)
         self.rule = line
-
-def _isvalid_(line):
-    if len(line) >= 5 and line[0:5] == 'alert':
-        return True
-    return False
-
-def _getversion_(line):
-    return 0 
-
-def _getsid_(line):
-    sid = -1
-    if _isvalid_(line):
-        idx = line.find("; sid:")
-        if idx != -1:
-            sid = line[idx+6: idx+13]
-    return sid
+    @staticmethod
+    def __isvalid(line):
+        if len(line) >= 5 and line[0:5] == 'alert':
+            return True
+        return False
+    @staticmethod
+    def __getversion(line):
+        return 0 
+    @staticmethod
+    def __getsid(line):
+        sid = -1
+        if Signature.__isvalid(line):
+            idx = line.find("; sid:")
+            if idx != -1:
+                sid = line[idx+6: idx+13]
+        return sid
 
 class RuleFile(object):
     def __init__(self,filePath):
         self.fileName = filePath
-        self.signatures = _parse_(filePath)
-
-def _parse_(filePath):
-    with open(filePath) as f:
-        signature = []
-        for line in f.readlines():
-            sig = Signature(line)
-            if sig.id == -1:
-                continue
-            signature.append(sig)
-        return signature
+        self.signatures = RuleFile.__parse(filePath)
+    @staticmethod
+    def __parse(filePath):
+        with open(filePath) as f:
+            signature = []
+            for line in f.readlines():
+                sig = Signature(line)
+                if sig.id == -1:
+                    continue
+                signature.append(sig)
+            return signature
 
 def _getFileList_(dirPath):
     if os.path.isdir(dirPath):
